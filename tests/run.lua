@@ -315,6 +315,64 @@ local function with_saved_settings(saved,fn)
     settings.readSetting,settings.saveSetting=read,save
     assert(ok,err)
 end
+local preload_requests
+module("wordwise_prefetch",{start=function(task,callback,failure)
+    local job={callback=callback,failure=failure,cancel=function(self) self.cancelled=true end}
+    preload_requests[#preload_requests+1]=job
+    return job
+end})
+local function cached_instance()
+    local o=instance()
+    preload_requests={}
+    o.enabled=true
+    o.ui.document.info.has_pages=false
+    o.view.view_mode="page"
+    o.view.visible_area={w=400,h=570}
+    o.view.state={offset={x=0,y=0}}
+    o.test_page,o.test_hash=2,"layout-a"
+    o.ui.document.getVisiblePageCount=function() return 1 end
+    o.ui.document.getCurrentPage=function() return o.test_page end
+    o.ui.document.getDocumentRenderingHash=function() return o.test_hash end
+    o.ui.document.getNextPage=function(_,p) return p+1 end
+    o.ui.document.getPrevPage=function(_,p) return p-1 end
+    return o
+end
+local function cached_page(page)
+    return {page=page,source="原文",protected=0,
+        hints={{word="someone",gloss="某人",level=2,rank=1,x0=100,x1=180,y0=200,y1=220,line_id=1}},
+        lines={{x0=0,y0=200,x1=300,y1=220}}}
+end
+test("prepared next page draws hints in first frame without another dirty request",function()
+    local o=cached_instance();o:startPreload()
+    preload_requests[1].callback({cached_page(2),cached_page(3),cached_page(1)})
+    o.test_page=3;o:onPageUpdate()
+    local before=dirty
+    o:paintTo({paintRect=function() end},0,0)
+    equal(o.cache_page,3);equal(#o.labels,1);equal(dirty,before)
+end)
+test("layout hash change cannot reuse prepared coordinates and cancels worker",function()
+    local o=cached_instance();o:startPreload()
+    local job=preload_requests[1]
+    o.test_hash="layout-b"
+    equal(o:usePageCache(true),false)
+    equal(job.cancelled,true);equal(next(o.page_cache),nil)
+end)
+test("background cache retains only current and adjacent pages",function()
+    local o=cached_instance();o:startPreload()
+    preload_requests[1].callback({cached_page(2),cached_page(3),cached_page(1)})
+    o.page_cache[9]=cached_page(9)
+    o:startPreload()
+    equal(o.page_cache[9],nil)
+    equal(#preload_requests,1)
+end)
+test("clear and suspend cancel background work without reviving cached labels",function()
+    local o=cached_instance();o:startPreload()
+    local job=preload_requests[1]
+    o:onWordWiseClear();equal(job.cancelled,true)
+    equal(next(o.page_cache),nil);equal(#o.labels,0)
+    o:startPreload();local second=preload_requests[2]
+    o:onSuspend();equal(second.cancelled,true);equal(next(o.page_cache),nil)
+end)
 test("new installs default to thirty and menu offers thirty",function()
     local o=instance();equal(o.limit,30)
     local menu={};o:addToMainMenu(menu)

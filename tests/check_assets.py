@@ -137,7 +137,7 @@ class Assets(unittest.TestCase):
             self.assertFalse(any("tests/fixtures" in name for name in names))
             self.assertFalse(any(name.endswith(".idx.oft") for name in names))
             for name in ("main.lua", "wordwise_core.lua", "wordwise_ocr.lua", "wordwise_text.lua",
-                         "wordwise_label.lua", "wordwise_controls.lua", "wordwise_names.lua"):
+                         "wordwise_label.lua", "wordwise_controls.lua", "wordwise_names.lua", "wordwise_prefetch.lua"):
                 self.assertEqual(package.read("koreader/plugins/wordwise.koplugin/"+name),
                                  (PLUGIN / name).read_bytes())
 

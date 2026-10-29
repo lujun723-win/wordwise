@@ -10,6 +10,8 @@ ReaderView提示层按实际字形裁空白，字号不变；中文与横括号�
 
 ## 分级、专名与行距
 
+0.4.1的wordwise_prefetch.lua在KOReader已有fork子进程中取相邻页原文、查词并返回提示坐标，不触发主ReaderUI翻页事件。主进程通过管道取结果，读取前确认有输出；关闭、休眠、布局变化取消并回收子进程。只缓存当前／前／后三页的文字结果；绘图前检查原生布局hash、尺寸、偏移、难度、字号、上限和按钮配置。命中缓存时在ReaderView同帧绘制，不再setDirty另刷一次。native_reader.lua覆盖真实相邻页首帧与主进程阅读位置，native_prefetch.lua覆盖大管道传输、错误上报、取消及进程组创建竞争；不新增平台运行时。
+
 - sources/exam保留国内六阶段词表与固定来源。课标转录经过逐页目视核对，不猜修正PDF的OCR文本。
 - 每词只存最早来源阶段，本词明定等级优先于原型；读取ECDICT的0原型与p/d/i/3/r/t/s正向关系，不猜词尾。无来源和范围外词按用户规则进入专八显示档，与实际收录分开审计。
 - MIT averaged perceptron模型的NNP/NNPS过滤先于小写和去重。Lua推理复用KOReader JSON，无新平台二进制。tests/test_names.py与保存的上游方法对照，不安装NLTK。

@@ -101,7 +101,76 @@ function WordWise:invalidate()
     self:releaseLabels()
     self.status = nil
     self.source = nil
+    self.cache_page = nil
     -- ReaderView's page/layout handlers request the repaint themselves.
+end
+
+function WordWise:canPreload()
+    local document=self.ui.document
+    return not document.info.has_pages and self.view and self.view.view_mode=="page"
+        and document:getVisiblePageCount()==1
+end
+
+function WordWise:stopPreload(clear)
+    if self.preload_job then self.preload_job:cancel();self.preload_job=nil end
+    if clear then self.page_cache={};self.preload_key=nil;self.cache_page=nil end
+end
+
+function WordWise:preloadKey()
+    local area, offset=self.view.visible_area,self.view.state.offset
+    return table.concat({self.ui.document:getDocumentRenderingHash(true),Screen:getWidth(),Screen:getHeight(),
+        area.w,area.h,offset.x,offset.y,self.threshold,self.font_size,self.limit,tostring(self.show_button)},":")
+end
+
+function WordWise:usePageCache(quiet)
+    if not self.enabled or not self:canPreload() then return false end
+    local key=self:preloadKey()
+    if self.preload_key~=key then self:stopPreload(true);self.preload_key=key end
+    local page=self.ui.document:getCurrentPage()
+    local entry=self.page_cache and self.page_cache[page]
+    if not entry then return false end
+    if self.cache_page~=page then
+        self.source,self.proper_nouns=entry.source,entry.protected
+        self:layoutHints(entry.hints,entry.lines,quiet)
+        self.cache_page=page
+        self.cache_hits=(self.cache_hits or 0)+1
+    end
+    return true
+end
+
+function WordWise:startPreload()
+    self:stopPreload(false)
+    self:usePageCache(true)
+    local key=self:preloadKey()
+    local document=self.ui.document
+    local page=document:getCurrentPage()
+    local targets,retained={},{}
+    for _,number in ipairs({page,document:getNextPage(page),document:getPrevPage(page)}) do
+        if number>0 then
+            if self.page_cache and self.page_cache[number] then retained[number]=self.page_cache[number]
+            else targets[#targets+1]=number end
+        end
+    end
+    self.page_cache=retained
+    if #targets==0 then return end
+    self.records=self.records or Core.readLevels(self.path.."/data/levels.tsv")
+    self.names=self.names or require("wordwise_names").load(self.path.."/models/pos")
+    local Prefetch=require("wordwise_prefetch")
+    self.preload_job=Prefetch.start(function() return Prefetch.prepare(self,targets) end,function(results)
+        self.preload_job=nil
+        if self.closed or self.suspended or not self.enabled or key~=self:preloadKey() then return end
+        for _,entry in ipairs(results) do self.page_cache[entry.page]=entry end
+        -- A cached turn is painted with the page. Only a first/cache-miss page
+        -- needs a later UI refresh when its background job completes.
+        if not self.cache_page then
+            self:usePageCache(true)
+            UIManager:setDirty(self.ui.dialog,"ui")
+        end
+    end,function(err)
+        self.preload_job=nil
+        logger.err("WordWise preload:",err)
+        self:notify("生词提示预处理失败：\n"..tostring(err):match("^[^\n]+"))
+    end)
 end
 
 function WordWise:cancelAutoScan()
@@ -121,17 +190,20 @@ function WordWise:scheduleAutoScan()
 end
 
 function WordWise:pageChanged()
+    self:stopPreload(false)
     self:invalidate()
     self:scheduleAutoScan()
 end
-function WordWise:resetLayout() self:pageChanged() end
+function WordWise:resetLayout() self:stopPreload(true);self:pageChanged() end
 function WordWise:onPageUpdate() self:pageChanged() end
 function WordWise:onPosUpdate() self:pageChanged() end
-function WordWise:onZoomUpdate() self:pageChanged() end
-function WordWise:onViewRecalculate() self:pageChanged() end
-function WordWise:onSetRotationMode() self:pageChanged() end
-function WordWise:onSetDimensions() self:pageChanged() end
+function WordWise:onZoomUpdate() self:resetLayout() end
+function WordWise:onViewRecalculate() self:resetLayout() end
+function WordWise:onSetRotationMode() self:resetLayout() end
+function WordWise:onSetDimensions() self:resetLayout() end
+function WordWise:onDocumentRerendered() self:resetLayout() end
 function WordWise:onSuspend()
+    self:stopPreload(true)
     self.suspended = true
     self:cancelAutoScan()
     self:invalidate()
@@ -141,6 +213,7 @@ function WordWise:onResume()
     self:scheduleAutoScan()
 end
 function WordWise:onCloseDocument()
+    self:stopPreload(true)
     self.closed = true
     self:cancelAutoScan()
     if self.controls then UIManager:close(self.controls); self.controls = nil end
@@ -150,6 +223,7 @@ function WordWise:onCloseDocument()
 end
 
 function WordWise:onWordWiseClear()
+    self:stopPreload(true)
     self:cancelAutoScan()
     self:invalidate()
     UIManager:setDirty(self.ui.dialog, "partial")
@@ -218,6 +292,7 @@ end
 
 function WordWise:paintTo(bb, x, y)
     if self.capturing then return end
+    self:usePageCache(true)
     if self.show_button then
         local rect = self:buttonRect()
         self.button_text:paintTo(bb,x+rect.x+rect.padding,y+rect.y+rect.text_y)
@@ -238,7 +313,7 @@ function WordWise:paintTo(bb, x, y)
     end
 end
 
-function WordWise:layoutHints(hints, lines)
+function WordWise:layoutHints(hints, lines, quiet)
     self:releaseLabels()
     self.padding = 0
     local widgets, retained = {}, {}
@@ -273,10 +348,10 @@ function WordWise:layoutHints(hints, lines)
     self.status = string.format("显示 %d 个（专八档 %d），超上限 %d\n未显示：行距 %d，正文 %d，释义重叠 %d，页边 %d，按钮 %d",
         #self.labels, rare, limited, reasons.line_gap, reasons.text, reasons.labels, reasons.edge, reasons.controls)
     if self.source then self.status = self.source .. " · " .. self.status end
-    UIManager:setDirty(self.ui.dialog, "partial")
-    if #hints > 0 and #self.labels == 0 and not self.auto_scan then
+    if not quiet then UIManager:setDirty(self.ui.dialog, "partial") end
+    if #hints > 0 and #self.labels == 0 and not self.auto_scan and not quiet then
         self:notify("本页生词无法放置。\n" .. self.status)
-    elseif #hints == 0 and not self.auto_scan then
+    elseif #hints == 0 and not self.auto_scan and not quiet then
         self:notify("当前页没有达到所选级别且词典有释义的生词。")
     end
 end
@@ -335,6 +410,12 @@ function WordWise:runScan()
 end
 
 function WordWise:onWordWiseScan(automatic)
+    if self.enabled and not self.closed and self:canPreload() then
+        self:cancelAutoScan()
+        local ok,err=xpcall(function() self:startPreload() end,debug.traceback)
+        if not ok then logger.err("WordWise preload:",err);self:notify("生词提示预处理失败：\n"..tostring(err):match("^[^\n]+")) end
+        return true
+    end
     if self.busy or self.closed then return true end
     self.busy = true
     self:cancelAutoScan()
@@ -410,7 +491,7 @@ function WordWise:addToMainMenu(menu_items)
                 sub_item_table_func=function() return self:gestureMenu() end },
             { text_func = function() return self.status or "尚未扫描当前页" end, enabled = false },
             { text = "使用说明", callback = function()
-                self:notify("完全离线，使用随包 ECDICT 短释义词典。\n\n分级为小学、初中、高中、四级、六级、专八，每词只存一级，显示所选及以上。小学参考2022课标与人教教材，其余参考对应教材／考试词表；取最早学习阶段，本词优先于原型。未收录词归专八档只是显示策略。旧 CEFR 设置升级后重置为高中，需重新选择。\n\n上下文词性模型略过人名等专有名词，普通名词仍查词；不是仅按大写屏蔽，也不是百分之百准确的人名识别器。\n\n开启提示默认把 EPUB 行距调到最大200%，关闭恢复原值；若期间手动改过行距，保留手动值。固定版PDF行距不变。右下角透明文字按钮可设置难度、开关；翻页自动更新，每页最多30个。\n\n版本 0.4.0 · Kindle Scribe 预览版")
+                self:notify("完全离线，使用随包 ECDICT 短释义词典。\n\n分级为小学、初中、高中、四级、六级、专八，每词只存一级，显示所选及以上。小学参考2022课标与人教教材，其余参考对应教材／考试词表；取最早学习阶段，本词优先于原型。未收录词归专八档只是显示策略。旧 CEFR 设置升级后重置为高中，需重新选择。\n\n上下文词性模型略过人名等专有名词，普通名词仍查词；不是仅按大写屏蔽，也不是百分之百准确的人名识别器。\n\n开启提示默认把 EPUB 行距调到最大200%，关闭恢复原值；若期间手动改过行距，保留手动值。固定版PDF行距不变。右下角透明文字按钮可设置难度、开关；翻页自动更新，每页最多30个。\n\nEPUB单页模式后台预处理相邻三页，缓存就绪后正文与译文同帧显示。首次开启、快速跳页仍需等待；不关闭阅读器定期全刷。\n\n版本 0.4.1 · Kindle Scribe 预览版")
             end },
         },
     }

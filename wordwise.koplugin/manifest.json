@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0-preview",
+  "version": "0.4.1-preview",
   "target": "Kindle Scribe / KOReader 2026.07.1",
   "records": 30000,
   "dictionary_records": 365619,

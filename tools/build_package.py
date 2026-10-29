@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "wordwise.koplugin"
 BOOKNAME = "ReadAssist ECDICT Short"
-VERSION = "0.4.0-preview"
+VERSION = "0.4.1-preview"
 COMMON_COUNT = 30_000
 WORD = re.compile(r"^[a-z][a-z'-]{1,29}$")
 EXAM_FILES = ("primary", "junior", "senior", "cet4", "cet6", "tem8")
