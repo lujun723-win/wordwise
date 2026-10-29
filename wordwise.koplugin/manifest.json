@@ -1,0 +1,45 @@
+{
+  "version": "0.4.0-preview",
+  "target": "Kindle Scribe / KOReader 2026.07.1",
+  "records": 30000,
+  "dictionary_records": 365619,
+  "graded_records": 18978,
+  "source_exam_records": 18933,
+  "grammar_derived_records": 45,
+  "extension_records": 11022,
+  "group_counts": {
+    "0": 1733,
+    "1": 1846,
+    "2": 4313,
+    "3": 2620,
+    "4": 2269,
+    "5": 17219
+  },
+  "invalid_source_records": 4,
+  "source_sha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+  "frequency_sha256": "dffae8066b78dce0a6667cf5f58e567054f902674667090a7ac8a8a44628b05c",
+  "exam_sources": {
+    "primary": "a9a6d272de91a10f3945ac191d8f34a033ed7d111b224368c4dc0c979e24a89e",
+    "junior": "f0e0ede7df764ad20d0067111a83501a9ac3ab321de57b7d950a0fc8f794b514",
+    "senior": "ceb5e6a0be383184d52d6430240bc69b0a486790461623805ff5ab8f2c562e7c",
+    "cet4": "3f40e3c0407c6bd083ff41a71059e82a40cba9d7e97c088762f332e91887a76a",
+    "cet6": "1b6848940d6f40a048c60e972216d7f5deaab991d9ad455093dc0002aae08e1b",
+    "tem8": "0d4ca7ba2fb165af4c94eb0b970965b68e065e764eca280ee1167af585246d94"
+  },
+  "curriculum_sources": {
+    "primary-curriculum-2022.tsv": "2624cf87df08d4475f697db0f0678607c125557ebb5c89a31309f74b1b1f1c0a",
+    "primary-curriculum-aliases.tsv": "cb66cbd0644c681535e8305a6cdc353666ffd55e0c4150c60bf4dacd1d6c1fd5"
+  },
+  "pos_model_sha256": {
+    "averaged_perceptron_tagger_eng.weights.json": "789e8e35f6fac656d9b7eccea29ba4e8a137cbb5b525dd31f39e4291a9e80832",
+    "averaged_perceptron_tagger_eng.classes.json": "d152ffa69d45b8357276341a3d592c6c025911d52ec0d9068d4f382560dd48b6",
+    "averaged_perceptron_tagger_eng.tagdict.json": "4c713731cb06727736962bc8cd94ad919217a040e76691059af99bc0c2c9c246"
+  },
+  "grammar_contractions_sha256": "46091d48005cdac272e64832a3436d63dbd171f902977414ea4d0bc0a3cd72d8",
+  "classification": "Primary PEP textbooks, junior/senior/CET4/CET6/TEM8 wordlists; one earliest stage per spelling; exact headword precedes explicit lemma; wordfreq top 30k; other words TEM8 display policy",
+  "proper_noun_backend": "MIT averaged perceptron POS model; NNP/NNPS protection before case folding and deduplication; not a PERSON-only NER model",
+  "model_sha256": "daa0c97d651c19fba3b25e81317cd697e9908c8208090c94c3905381c23fc047",
+  "model_source": "https://github.com/tesseract-ocr/tessdata/blob/4.1.0/eng.traineddata",
+  "ocr_backend": "KOReader KOPTContext: native word boxes + PSM_SINGLE_WORD",
+  "text_backend": "CREngine original XPointers; PDF original MuPDF text boxes; OCR only when visible pages have no source text"
+}

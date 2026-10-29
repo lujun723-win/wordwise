@@ -1,0 +1,96 @@
+{
+  "repository": "https://github.com/kajweb/dict",
+  "commit": "3992bcb94c800a2fd38a9fd6ff95b2353e755363",
+  "files": [
+    {
+      "path": "book/1521164632445_PEPXiaoXue6_2.zip",
+      "level": 0,
+      "sha256": "7655c423aaa3f98ec61a6e6570e5aca984248e38bc97fbc2a35c8c8139227ea7",
+      "raw_word_count": 108
+    },
+    {
+      "path": "book/1521164635506_CET4_2.zip",
+      "level": 3,
+      "sha256": "ca6661bcaac6330f64054283974b199b378950b755f57c7573e4a06541b07b82",
+      "raw_word_count": 3739
+    },
+    {
+      "path": "book/1521164647926_ChuZhong_2.zip",
+      "level": 1,
+      "sha256": "c5592e9ba0dcdd968227b0f2e647916d5136152b3c2f54488ec3adcced6560c9",
+      "raw_word_count": 1420
+    },
+    {
+      "path": "book/1521164656604_PEPXiaoXue3_2.zip",
+      "level": 0,
+      "sha256": "3d5182e02e5ea9cbe847dee0bec0e1b0a9c4d443ce1826150c326e02d1afe2a6",
+      "raw_word_count": 72
+    },
+    {
+      "path": "book/1521164661774_PEPXiaoXue3_1.zip",
+      "level": 0,
+      "sha256": "8987ffc4ca37ab8260737bdd7cb213fe1227528f28103d4b58cb6466d14ee30a",
+      "raw_word_count": 64
+    },
+    {
+      "path": "book/1521164663086_PEPXiaoXue4_2.zip",
+      "level": 0,
+      "sha256": "1e3e53ac3c0b259931c8e8cf775bd86bf51f5a421533bfa60db180ac24775109",
+      "raw_word_count": 104
+    },
+    {
+      "path": "book/1521164663794_Level8_2.zip",
+      "level": 5,
+      "sha256": "b707f291eb304dd78f17d6e30bbacd41f65a069b43d121f6dc435d0c1c9461a7",
+      "raw_word_count": 12197
+    },
+    {
+      "path": "book/1521164675301_GaoZhong_2.zip",
+      "level": 2,
+      "sha256": "c0dd892757d32ec0ec78d2e094a7bf34ad3f043f7154ab8247cc865c64bd0d96",
+      "raw_word_count": 3668
+    },
+    {
+      "path": "book/1521164677447_PEPXiaoXue4_1.zip",
+      "level": 0,
+      "sha256": "26262e5b1060a33b21ddd3d22eb1561bade008069d1ff5939edfec66591e8a21",
+      "raw_word_count": 84
+    },
+    {
+      "path": "book/1524052554766_CET6_2.zip",
+      "level": 4,
+      "sha256": "fe12c5a331510e86da4a187a829d9d72e2785588e60ce45d830f349c30fc3866",
+      "raw_word_count": 2078
+    },
+    {
+      "path": "book/1530101073491_PEPXiaoXue5_2.zip",
+      "level": 0,
+      "sha256": "671001a23a7455145d629dbf84c2943333bd0b5f2d0497ff1f085733a5404320",
+      "raw_word_count": 156
+    },
+    {
+      "path": "book/1530101075331_PEPXiaoXue6_1.zip",
+      "level": 0,
+      "sha256": "d38ff9df8f5457d318899d91d11cc626c2cf462e27c0cba83b940ce68612e5e8",
+      "raw_word_count": 130
+    },
+    {
+      "path": "book/1530101080610_PEPXiaoXue5_1.zip",
+      "level": 0,
+      "sha256": "729588a4cc1c3500e0bdca0da6bfe194a1b4434b66021a65a9900d9722786356",
+      "raw_word_count": 131
+    }
+  ],
+  "extraction": "Headword and book membership only; no definitions, examples or audio redistributed",
+  "curriculum": {
+    "title": "义务教育英语课程标准（2022年版）附录3 二级词汇表",
+    "author": "中华人民共和国教育部",
+    "url": "https://www.esph.com.cn/docs/2025-10/705da262a6e74b088ac658bfe2d757ba.pdf",
+    "pdf_sha256": "651d6d840680a926cafb02a7f83bcfb57cb8474ef5cd904a8a2c534a4f70c329",
+    "pages_1_based": [
+      95,
+      104
+    ],
+    "verification": "All ten pages rendered and visually checked; 504 single headwords and one multiword ice cream; explicit parenthetical variants recorded separately; no OCR spelling repair used"
+  }
+}

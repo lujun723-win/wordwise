@@ -1,0 +1,51 @@
+# Explicit common grammatical contractions. Facts checked against Cambridge English Grammar Today.
+# https://dictionary.cambridge.org/grammar/british-grammar/contractions
+# word<TAB>full forms, alternatives separated by |. No suffix guessing at runtime.
+i'm	i am
+you're	you are
+we're	we are
+they're	they are
+he's	he is|he has
+she's	she is|she has
+it's	it is|it has
+that's	that is|that has
+there's	there is|there has
+here's	here is|here has
+what's	what is|what has
+who's	who is|who has
+where's	where is|where has
+how's	how is|how has
+i've	i have
+you've	you have
+we've	we have
+they've	they have
+i'll	i will
+you'll	you will
+he'll	he will
+she'll	she will
+it'll	it will
+we'll	we will
+they'll	they will
+i'd	i had|i would
+you'd	you had|you would
+he'd	he had|he would
+she'd	she had|she would
+it'd	it had|it would
+we'd	we had|we would
+they'd	they had|they would
+aren't	are not
+can't	can not
+couldn't	could not
+didn't	did not
+doesn't	does not
+don't	do not
+hasn't	has not
+haven't	have not
+isn't	is not
+mustn't	must not
+shan't	shall not
+shouldn't	should not
+wasn't	was not
+weren't	were not
+won't	will not
+wouldn't	would not

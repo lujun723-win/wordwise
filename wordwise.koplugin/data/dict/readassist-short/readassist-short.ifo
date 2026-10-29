@@ -1,0 +1,8 @@
+StarDict's dict ifo file
+version=2.4.2
+wordcount=365619
+idxfilesize=6717062
+bookname=ReadAssist ECDICT Short
+sametypesequence=m
+lang=en-zh
+description=ECDICT short Chinese definitions; MIT. A separate index assigns one Chinese learning-stage group per spelling.

@@ -1,0 +1,343 @@
+{
+  "invalid_source_entries": [
+    {
+      "word": "bonxie",
+      "gloss": "</JX(设得兰群岛产的)…",
+      "reason": "invalid source text; not repaired"
+    },
+    {
+      "word": "hetero",
+      "gloss": "<>(=heterosex…",
+      "reason": "invalid source text; not repaired"
+    },
+    {
+      "word": "heteros",
+      "gloss": "adj.<>(=heter…",
+      "reason": "invalid source text; not repaired"
+    },
+    {
+      "word": "hydrogenise",
+      "gloss": "<>(=hydrogeni…",
+      "reason": "invalid source text; not repaired"
+    }
+  ],
+  "source_exam_common_words": 18933,
+  "grammar_derived_common_words": 45,
+  "extension_common_words": 11022,
+  "group_counts": {
+    "0": 1733,
+    "1": 1846,
+    "2": 4313,
+    "3": 2620,
+    "4": 2269,
+    "5": 17219
+  },
+  "grammar_contractions": {
+    "i'm": {
+      "forms": [
+        "i am"
+      ],
+      "level": 0
+    },
+    "you're": {
+      "forms": [
+        "you are"
+      ],
+      "level": 0
+    },
+    "we're": {
+      "forms": [
+        "we are"
+      ],
+      "level": 0
+    },
+    "they're": {
+      "forms": [
+        "they are"
+      ],
+      "level": 0
+    },
+    "he's": {
+      "forms": [
+        "he is",
+        "he has"
+      ],
+      "level": 0
+    },
+    "she's": {
+      "forms": [
+        "she is",
+        "she has"
+      ],
+      "level": 0
+    },
+    "it's": {
+      "forms": [
+        "it is",
+        "it has"
+      ],
+      "level": 0
+    },
+    "that's": {
+      "forms": [
+        "that is",
+        "that has"
+      ],
+      "level": 0
+    },
+    "there's": {
+      "forms": [
+        "there is",
+        "there has"
+      ],
+      "level": 0
+    },
+    "here's": {
+      "forms": [
+        "here is",
+        "here has"
+      ],
+      "level": 0
+    },
+    "what's": {
+      "forms": [
+        "what is",
+        "what has"
+      ],
+      "level": 0
+    },
+    "who's": {
+      "forms": [
+        "who is",
+        "who has"
+      ],
+      "level": 0
+    },
+    "where's": {
+      "forms": [
+        "where is",
+        "where has"
+      ],
+      "level": 0
+    },
+    "how's": {
+      "forms": [
+        "how is",
+        "how has"
+      ],
+      "level": 0
+    },
+    "i've": {
+      "forms": [
+        "i have"
+      ],
+      "level": 0
+    },
+    "you've": {
+      "forms": [
+        "you have"
+      ],
+      "level": 0
+    },
+    "we've": {
+      "forms": [
+        "we have"
+      ],
+      "level": 0
+    },
+    "they've": {
+      "forms": [
+        "they have"
+      ],
+      "level": 0
+    },
+    "i'll": {
+      "forms": [
+        "i will"
+      ],
+      "level": 0
+    },
+    "you'll": {
+      "forms": [
+        "you will"
+      ],
+      "level": 0
+    },
+    "he'll": {
+      "forms": [
+        "he will"
+      ],
+      "level": 0
+    },
+    "she'll": {
+      "forms": [
+        "she will"
+      ],
+      "level": 0
+    },
+    "it'll": {
+      "forms": [
+        "it will"
+      ],
+      "level": 0
+    },
+    "we'll": {
+      "forms": [
+        "we will"
+      ],
+      "level": 0
+    },
+    "they'll": {
+      "forms": [
+        "they will"
+      ],
+      "level": 0
+    },
+    "i'd": {
+      "forms": [
+        "i had",
+        "i would"
+      ],
+      "level": 0
+    },
+    "you'd": {
+      "forms": [
+        "you had",
+        "you would"
+      ],
+      "level": 0
+    },
+    "he'd": {
+      "forms": [
+        "he had",
+        "he would"
+      ],
+      "level": 0
+    },
+    "she'd": {
+      "forms": [
+        "she had",
+        "she would"
+      ],
+      "level": 0
+    },
+    "it'd": {
+      "forms": [
+        "it had",
+        "it would"
+      ],
+      "level": 0
+    },
+    "we'd": {
+      "forms": [
+        "we had",
+        "we would"
+      ],
+      "level": 0
+    },
+    "they'd": {
+      "forms": [
+        "they had",
+        "they would"
+      ],
+      "level": 0
+    },
+    "aren't": {
+      "forms": [
+        "are not"
+      ],
+      "level": 0
+    },
+    "can't": {
+      "forms": [
+        "can not"
+      ],
+      "level": 0
+    },
+    "couldn't": {
+      "forms": [
+        "could not"
+      ],
+      "level": 0
+    },
+    "didn't": {
+      "forms": [
+        "did not"
+      ],
+      "level": 0
+    },
+    "doesn't": {
+      "forms": [
+        "does not"
+      ],
+      "level": 5
+    },
+    "don't": {
+      "forms": [
+        "do not"
+      ],
+      "level": 0
+    },
+    "hasn't": {
+      "forms": [
+        "has not"
+      ],
+      "level": 0
+    },
+    "haven't": {
+      "forms": [
+        "have not"
+      ],
+      "level": 0
+    },
+    "isn't": {
+      "forms": [
+        "is not"
+      ],
+      "level": 0
+    },
+    "mustn't": {
+      "forms": [
+        "must not"
+      ],
+      "level": 0
+    },
+    "shan't": {
+      "forms": [
+        "shall not"
+      ],
+      "level": 0
+    },
+    "shouldn't": {
+      "forms": [
+        "should not"
+      ],
+      "level": 0
+    },
+    "wasn't": {
+      "forms": [
+        "was not"
+      ],
+      "level": 0
+    },
+    "weren't": {
+      "forms": [
+        "were not"
+      ],
+      "level": 0
+    },
+    "won't": {
+      "forms": [
+        "will not"
+      ],
+      "level": 0
+    },
+    "wouldn't": {
+      "forms": [
+        "would not"
+      ],
+      "level": 1
+    }
+  },
+  "extension_policy": "No source match or outside 30k index: TEM8 group by user policy; not official exam membership"
+}
