@@ -379,6 +379,12 @@ test("new installs default to thirty and menu offers thirty",function()
     local options=menu.wordwise.sub_item_table[5].sub_item_table
     equal(options[#options].text,"30")
 end)
+test("font menu offers eighteen without replacing the saved choice",function()
+    local o=instance();local menu={};o:addToMainMenu(menu)
+    local choices=menu.wordwise.sub_item_table[6].sub_item_table
+    equal(choices[#choices].text,'18')
+    choices[#choices].callback();equal(o.font_size,18)
+end)
 test("old twenty setting migrates once while reading level stays unchanged",function()
     local saved={limit=20,threshold=3,grade_scheme="exam-cn-v1",font_scheme="uniform-v1",font_size=8}
     with_saved_settings(saved,function()

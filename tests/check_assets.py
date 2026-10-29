@@ -31,8 +31,7 @@ class Assets(unittest.TestCase):
             data, rejected = read_database(path)
             self.assertFalse(rejected)
             self.assertEqual(grade_word("was", data["was"]["lemma"], {"be":0}), 0)
-            # An explicit headword grade still takes priority over an inflection.
-            self.assertEqual(grade_word("saw",data["saw"]["lemma"],{"see":0,"saw":2}),2)
+            self.assertEqual(grade_word("saw",data["saw"]["lemma"],{"see":0,"saw":2}),0)
 
     def test_contractions_have_complete_expansions_and_component_based_levels(self):
         data = {"what":{"gloss":"什么","lemma":None}}
@@ -42,14 +41,14 @@ class Assets(unittest.TestCase):
         self.assertEqual(data["what's"]["gloss"],"what is／what has 的缩写")
         self.assertNotIn("…", data["what's"]["gloss"])
 
-    def test_one_exam_stage_with_exact_headword_precedence(self):
+    def test_one_exam_stage_with_explicit_inflection_membership(self):
         grades = read_exam(ROOT / "sources/exam")
         self.assertEqual(grades["apple"],0)
         for word in ('the','and','be','am','is','are','has','I'.lower()):self.assertEqual(grades[word],0)
         self.assertEqual(grades["nomenclature"],5)
-        self.assertEqual(grade_word("established", "establish", grades), 3)
+        self.assertEqual(grade_word("hurried", "hurry", grades),0)
         self.assertEqual(grade_word("unmatched-word", None, grades), 5)
-        self.assertEqual(grade_word("form", "base", {"form":4,"base":2}), 4)
+        self.assertEqual(grade_word("form", "base", {"form":4,"base":2}), 2)
         self.assertEqual(grade_word("inflection", "base", {"base":2}),2)
 
     def test_reported_words_are_present_without_invented_grades(self):
@@ -58,9 +57,7 @@ class Assets(unittest.TestCase):
             if not line.startswith("#"):
                 word, level, rank = line.split("\t")
                 records[word] = int(level)
-        expected = {"inspired":2, "accomplishes":2, "established":3,
-                    "nomenclature":5, "significantly":5, "intact":5,
-                    "was":0,"were":0,"shoulder":1,"shoulders":1}
+        expected = {"hurried":0,"hurry":0,"was":0,"were":0,"shoulder":1,"shoulders":1}
         self.assertEqual(len(records),30_000)
         for word, level in expected.items():
             self.assertEqual(records[word], level, word)
@@ -115,6 +112,10 @@ class Assets(unittest.TestCase):
         self.assertEqual(hashlib.sha256(model.read_bytes()).hexdigest(), manifest["model_sha256"])
         for name,digest in manifest['pos_model_sha256'].items():
             self.assertEqual(hashlib.sha256((PLUGIN/'models/pos'/name).read_bytes()).hexdigest(),digest)
+        self.assertEqual(hashlib.sha256((ROOT/'sources/exam/additional-evidence.json').read_bytes()).hexdigest(),manifest['additional_evidence_sha256'])
+        rows=json.loads((ROOT/'sources/exam/additional-evidence.json').read_text())['records']
+        for word,source,level in [('hurry','moe-senior-2020',1),('heave','neea-cet-2016',4),('help','neea-cet-2016',3),('intact','neea-cet-2016',3)]:
+            self.assertTrue(any(r['word']==word and r['source']==source and r['level']==level for r in rows))
 
     def test_licenses_are_present_and_complete(self):
         expected = {"AGPL-3.0.txt": 30000, "TESSDATA_LICENSE": 10000,
@@ -148,6 +149,11 @@ class Assets(unittest.TestCase):
         manifest=json.loads((PLUGIN/'manifest.json').read_text())
         self.assertEqual(sum(manifest['group_counts'].values()),30000)
         self.assertEqual(manifest['graded_records']+manifest['extension_records'],30000)
+        for row in audit:
+            if row['evidence']:
+                self.assertEqual(row['level'],min(x['level'] for x in row['evidence']),row['word'])
+        hurried=next(r for r in audit if r['word']=='hurried')
+        self.assertEqual(hurried['origin'],'lemma:hurry')
 
 
 if __name__ == "__main__":

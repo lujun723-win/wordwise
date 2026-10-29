@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "wordwise.koplugin"
 BOOKNAME = "ReadAssist ECDICT Short"
-VERSION = "0.4.1-preview"
+VERSION = "0.4.2-preview"
 COMMON_COUNT = 30_000
 WORD = re.compile(r"^[a-z][a-z'-]{1,29}$")
 EXAM_FILES = ("primary", "junior", "senior", "cet4", "cet6", "tem8")
@@ -39,6 +39,8 @@ def read_exam(directory: Path) -> dict[str, int]:
         for word in (directory / (name + ".txt")).read_text().splitlines():
             if re.fullmatch(r"[a-z][a-z'-]{0,29}", word):
                 levels.setdefault(word, level)
+    for row in json.loads((directory/'additional-evidence.json').read_text())['records']:
+        levels[row['word']]=min(levels.get(row['word'],5),row['level'])
     return levels
 
 
@@ -49,11 +51,10 @@ def source_lemma(lemma: str | tuple | None, grades: dict[str, int]) -> str | Non
 
 
 def grade_word(word: str, lemma: str | tuple | None, grades: dict[str, int]) -> int:
-    # The exact headword's source grade must not be lowered by its lemma.
-    if word in grades:
-        return grades[word]
     base = source_lemma(lemma, grades)
-    return grades[base] if base is not None else 5
+    # A spelling can also be a basic inflection: use the earliest attested
+    # learning stage across the spelling and its explicitly recorded lemmas.
+    return min(grades.get(word,5),grades[base] if base is not None else 5)
 
 
 def add_contractions(database: dict, grades: dict, path: Path) -> dict:
@@ -76,7 +77,7 @@ def add_contractions(database: dict, grades: dict, path: Path) -> dict:
             levels.append(max(components))
         # Keep the explanation complete, including both is/has alternatives.
         database[word] = {"lemma": None, "gloss": "／".join(alternatives) + " 的缩写"}
-        grades.setdefault(word, min(levels))
+        grades[word]=min(grades.get(word,5),min(levels))
         entries[word] = {"forms": alternatives, "level": grades[word]}
     return entries
 
@@ -133,8 +134,10 @@ def read_database(path: Path) -> tuple[dict, list]:
             assert word not in records, f"Duplicate headword: {word}"
             records[word] = {"lemma": exchanges.get("0"), "gloss": gloss}
     for word, record in records.items():
-        if record["lemma"] is None and word in inflections:
-            record["lemma"] = tuple(sorted(inflections[word]))
+        bases=set(inflections.get(word,()))
+        if record['lemma']:bases.add(record['lemma'])
+        bases.discard(word)
+        record['lemma']=tuple(sorted(bases))
     return records, rejected
 
 
@@ -160,6 +163,14 @@ def build_assets(model: Path, ecdict_csv: Path, frequency: Path, exam_dir: Path)
     database, rejected = read_database(ecdict_csv)
     grades = read_exam(exam_dir)
     source_grades = dict(grades)
+    evidence={}
+    for name in EXAM_FILES:
+        for word in (exam_dir/(name+'.txt')).read_text().splitlines():
+            evidence.setdefault(word,[]).append({'source':'textbook-'+name,'level':EXAM_FILES.index(name)})
+    for word,level in grades.items():
+        if level==0:evidence.setdefault(word,[]).append({'source':'primary-curriculum-or-textbook','level':0})
+    extra=json.loads((exam_dir/'additional-evidence.json').read_text())
+    for row in extra['records']:evidence.setdefault(row['word'],[]).append(row)
     contractions_path = ROOT / "sources/grammar-contractions.tsv"
     contractions = add_contractions(database, grades, contractions_path)
     common = common_words(frequency, database)
@@ -193,11 +204,21 @@ def build_assets(model: Path, ecdict_csv: Path, frequency: Path, exam_dir: Path)
     audit=[]
     for word,level,rank in sorted(levels):
         lemma=database[word]["lemma"]
-        if word in source_grades: origin="source:"+word
+        base=source_lemma(lemma,source_grades)
+        if base is not None and source_grades[base]<source_grades.get(word,6): origin="lemma:"+base
+        elif word in contractions and grades[word]<source_grades.get(word,6): origin="grammar:"+word
+        elif word in source_grades: origin="source:"+word
         elif word in contractions: origin="grammar:"+word
         elif source_lemma(lemma, source_grades) is not None: origin="lemma:"+source_lemma(lemma, source_grades)
         else: origin="extension-policy"
-        audit.append({"word":word,"level":level,"rank":rank,"origin":origin})
+        comparisons=[]
+        if word in contractions:
+            comparisons.append({'word':word,'source':'explicit-grammar-expansion','level':contractions[word]['level']})
+        for term in (word,*(lemma or ())):
+            for item in evidence.get(term,[]):
+                comparisons.append({'word':term,'source':item['source'],'level':item['level'],**({'page':item['page']} if 'page' in item else {})})
+        audit.append({"word":word,"level":level,"rank":rank,"origin":origin,
+            "evidence":comparisons,"multiple_stage_memberships":len({item['level'] for item in comparisons})>1})
     (data/"level-audit.json").write_text(json.dumps(audit,ensure_ascii=False,separators=(",",":"))+"\n")
     counts={str(i):sum(level==i for _,level,_ in levels) for i in range(6)}
     source_count=sum(r["origin"].startswith(("source:","lemma:")) for r in audit)
@@ -227,6 +248,7 @@ def build_assets(model: Path, ecdict_csv: Path, frequency: Path, exam_dir: Path)
     assert len(pos_hashes)==3
     shutil.copyfile(ROOT/"sources/nlp/MIT-LICENSE",PLUGIN/"licenses/POS_TAGGER_MIT.txt")
     shutil.copyfile(exam_dir/"sources.json",PLUGIN/"data/exam-sources.json")
+    (PLUGIN/'data/additional-sources.json').write_text(json.dumps(extra['sources'],ensure_ascii=False,indent=2)+'\n')
     return {
         "version": VERSION, "target": "Kindle Scribe / KOReader 2026.07.1",
         "records": len(levels), "dictionary_records": len(database),
@@ -242,7 +264,8 @@ def build_assets(model: Path, ecdict_csv: Path, frequency: Path, exam_dir: Path)
         "curriculum_sources": {name: hashlib.sha256((exam_dir/name).read_bytes()).hexdigest() for name in ('primary-curriculum-2022.tsv','primary-curriculum-aliases.tsv')},
         "pos_model_sha256":pos_hashes,
         "grammar_contractions_sha256": hashlib.sha256(contractions_path.read_bytes()).hexdigest(),
-        "classification": "Primary PEP textbooks, junior/senior/CET4/CET6/TEM8 wordlists; one earliest stage per spelling; exact headword precedes explicit lemma; wordfreq top 30k; other words TEM8 display policy",
+        "classification": "2022 primary curriculum, 2020 official senior curriculum, 2016 official CET, textbook lists and ECDICT tags compared; earliest attested spelling or explicit inflection stage; other words TEM8 display policy",
+        "additional_evidence_sha256":hashlib.sha256((exam_dir/'additional-evidence.json').read_bytes()).hexdigest(),
         "proper_noun_backend":"MIT averaged perceptron POS model; NNP/NNPS protection before case folding and deduplication; not a PERSON-only NER model",
         "model_sha256": hashlib.sha256(model.read_bytes()).hexdigest(),
         "model_source": "https://github.com/tesseract-ocr/tessdata/blob/4.1.0/eng.traineddata",

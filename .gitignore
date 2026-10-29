@@ -15,6 +15,7 @@
 /sources/exam/*
 !/sources/exam/README.md
 !/sources/exam/sources.json
+!/sources/exam/additional-evidence.json
 !/sources/exam/primary.txt
 !/sources/exam/junior.txt
 !/sources/exam/senior.txt

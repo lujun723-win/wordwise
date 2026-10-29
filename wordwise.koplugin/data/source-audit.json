@@ -21,16 +21,16 @@
       "reason": "invalid source text; not repaired"
     }
   ],
-  "source_exam_common_words": 18933,
+  "source_exam_common_words": 19861,
   "grammar_derived_common_words": 45,
-  "extension_common_words": 11022,
+  "extension_common_words": 10094,
   "group_counts": {
-    "0": 1733,
-    "1": 1846,
-    "2": 4313,
-    "3": 2620,
-    "4": 2269,
-    "5": 17219
+    "0": 1842,
+    "1": 2328,
+    "2": 4853,
+    "3": 4374,
+    "4": 2844,
+    "5": 13759
   },
   "grammar_contractions": {
     "i'm": {
@@ -270,7 +270,7 @@
       "forms": [
         "does not"
       ],
-      "level": 5
+      "level": 0
     },
     "don't": {
       "forms": [

@@ -463,7 +463,7 @@ function WordWise:addToMainMenu(menu_items)
             callback = function() self:saveOption("limit", value) end,
         }
     end
-    for _, value in ipairs({ 8, 9, 10, 12, 14 }) do
+    for _, value in ipairs({ 8, 9, 10, 12, 14, 16, 18 }) do
         sizes[#sizes + 1] = {
             text = tostring(value), checked_func = function() return self.font_size == value end,
             callback = function() self:saveOption("font_size", value) end,
@@ -491,7 +491,7 @@ function WordWise:addToMainMenu(menu_items)
                 sub_item_table_func=function() return self:gestureMenu() end },
             { text_func = function() return self.status or "尚未扫描当前页" end, enabled = false },
             { text = "使用说明", callback = function()
-                self:notify("完全离线，使用随包 ECDICT 短释义词典。\n\n分级为小学、初中、高中、四级、六级、专八，每词只存一级，显示所选及以上。小学参考2022课标与人教教材，其余参考对应教材／考试词表；取最早学习阶段，本词优先于原型。未收录词归专八档只是显示策略。旧 CEFR 设置升级后重置为高中，需重新选择。\n\n上下文词性模型略过人名等专有名词，普通名词仍查词；不是仅按大写屏蔽，也不是百分之百准确的人名识别器。\n\n开启提示默认把 EPUB 行距调到最大200%，关闭恢复原值；若期间手动改过行距，保留手动值。固定版PDF行距不变。右下角透明文字按钮可设置难度、开关；翻页自动更新，每页最多30个。\n\nEPUB单页模式后台预处理相邻三页，缓存就绪后正文与译文同帧显示。首次开启、快速跳页仍需等待；不关闭阅读器定期全刷。\n\n版本 0.4.1 · Kindle Scribe 预览版")
+                self:notify("完全离线，使用随包 ECDICT 短释义词典。\n\n分级为小学、初中、高中、四级、六级、专八，每词只存一级，显示所选及以上。小学参考2022课标与人教教材，其余参考对应教材／考试词表；取最早学习阶段，明确屈折变形与本词取最早阶段。未收录词归专八档只是显示策略。旧 CEFR 设置升级后重置为高中，需重新选择。\n\n上下文词性模型略过人名等专有名词，普通名词仍查词；不是仅按大写屏蔽，也不是百分之百准确的人名识别器。\n\n开启提示默认把 EPUB 行距调到最大200%，关闭恢复原值；若期间手动改过行距，保留手动值。固定版PDF行距不变。右下角透明文字按钮可设置难度、开关；翻页自动更新，每页最多30个。\n\nEPUB单页模式后台预处理相邻三页，缓存就绪后正文与译文同帧显示。首次开启、快速跳页仍需等待；不关闭阅读器定期全刷。\n\n版本 0.4.2 · Kindle Scribe 预览版")
             end },
         },
     }

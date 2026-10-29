@@ -1,0 +1,25 @@
+{
+  "moe-senior-2020": {
+    "url": "https://www.ictr.edu.cn/Uploads/File/2025/02/07/4.%E6%99%AE%E9%80%9A%E9%AB%98%E4%B8%AD%E8%8B%B1%E8%AF%AD%E8%AF%BE%E7%A8%8B%E6%A0%87%E5%87%86%EF%BC%882017%E5%B9%B4%E7%89%882020%E5%B9%B4%E4%BF%AE%E8%AE%A2%EF%BC%89.20250207211247.pdf",
+    "sha256": "8ebd6bb12e9eb1c58e422ee01b540a4a71d2e681a4c4a764a36ee3a34b21c1be",
+    "pages": [
+      129,
+      184
+    ],
+    "rule": "Unstarred compulsory-education words => junior; * and ** => senior. Full explicit parenthetical spellings only."
+  },
+  "neea-cet-2016": {
+    "url": "https://cet.neea.edu.cn/res/Home/1704/55b02330ac17274664f06d9d3db8249d.pdf",
+    "sha256": "9166d3c03b7bc43abd9d9df91bd2ef8085b4419286f1e5ca100dea68f3cfd1f1",
+    "pages": [
+      21,
+      149
+    ],
+    "rule": "Literal plain electronic text rows: unstarred CET4, starred CET6; unsupported shortened/parenthetical spellings excluded, not guessed."
+  },
+  "ecdict-tags": {
+    "url": "https://github.com/skywind3000/ECDICT",
+    "sha256": "d1ecbdf9ee2b920afb6f430ca6b6bb9f559588cf0dff86e04bd255f9390843cc",
+    "rule": "zk/gk/cet4/cet6 are community dictionary evidence, not official certification."
+  }
+}

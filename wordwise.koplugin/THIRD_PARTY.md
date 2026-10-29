@@ -1,5 +1,7 @@
 # 第三方资源与署名
 
+- 0.4.2增加教育部普通高中英语课程标准2017/2020及教育考试院CET大纲2016的明确词形、星号事实标记，使用ECDICT MIT考试标签交叉比较。来源URL、原文件摘要和页码见data/additional-sources.json与sources/exam/additional-evidence.json；仅存词形与阶段事实，不复制教学正文。词级为本项目阅读提示规则，不冒充三万词全部官方认证。
+
 - KOReader 2026.07.1：https://github.com/koreader/koreader/tree/v2026.07.1 ，AGPL-3.0-or-later。本插件使用其 API，未分发修改后的核心二进制。
 - 0.4.0 国内阶段词形：教育部《义务教育英语课程标准（2022年版）》附录3二级词表、PEP教材与对应备考词表；数据来源、固定提交与摘要见data/exam-sources.json。只提取词形及所属阶段，不分发词书释义、例句、图片、音频；生成一词一级的事实索引，不冒充官方统一考试标准。
 - 离线专名保护：NLTK averaged_perceptron_tagger_eng，Matthew Honnibal / NLTK，MIT。源码 https://github.com/nltk/nltk/blob/develop/nltk/tag/perceptron.py ，模型 https://github.com/nltk/nltk_data/tree/gh-pages/packages/taggers ，保留licenses/POS_TAGGER_MIT.txt。Lua推理移植保留原特征与权重，未使用ACE实体模型。
