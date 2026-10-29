@@ -2,7 +2,7 @@
 local Core = {}
 
 Core.dictionary_name = "ReadAssist ECDICT Short"
-Core.levels = { "小学", "初中", "高中", "四级", "六级", "专八" }
+Core.levels = { "小学", "初中", "高中", "四级", "六级", "未划分等级" }
 
 function Core.normalize(raw)
     local word = raw:gsub("’", "'"):gsub("‘", "'"):gsub("“", '"'):gsub("”", '"')
@@ -34,7 +34,7 @@ function Core.select(words, records, threshold, limit)
         if word and not seen[word] then
             seen[word] = true
             -- Explicit user policy: words outside the 30k common index enter
-            -- the TEM8 display group. Exact dictionary lookup below
+            -- the unclassified group. Exact dictionary lookup below
             -- must still confirm a real entry; OCR noise is never translated.
             local record = records[word] or {level=5, rank=30001}
             if record.level >= threshold then

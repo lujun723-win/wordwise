@@ -401,7 +401,7 @@ test("CEFR settings migrate to a distinct exam scheme rather than relabelling",f
     local saved={threshold=5,grade_scheme="cefr-v1"}
     with_saved_settings(saved,function()
         equal(instance().threshold,2);equal(saved.grade_scheme,"exam-cn-v1")
-        equal(#Core.levels,6);equal(Core.levels[1],"小学");equal(Core.levels[6],"专八")
+        equal(#Core.levels,6);equal(Core.levels[1],"小学");equal(Core.levels[6],"未划分等级")
     end)
 end)
 local function rolling_spacing(o,value)

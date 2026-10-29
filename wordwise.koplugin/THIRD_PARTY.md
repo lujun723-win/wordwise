@@ -1,5 +1,7 @@
 # 第三方资源与署名
 
+- 0.4.3取消专八分级，未匹配小学至六级的词标为未划分等级；旧词表仅保留来源历史。许可证和原始署名继续保留，不将旧来源记录当作当前词级认定。
+
 - 0.4.2增加教育部普通高中英语课程标准2017/2020及教育考试院CET大纲2016的明确词形、星号事实标记，使用ECDICT MIT考试标签交叉比较。来源URL、原文件摘要和页码见data/additional-sources.json与sources/exam/additional-evidence.json；仅存词形与阶段事实，不复制教学正文。词级为本项目阅读提示规则，不冒充三万词全部官方认证。
 
 - KOReader 2026.07.1：https://github.com/koreader/koreader/tree/v2026.07.1 ，AGPL-3.0-or-later。本插件使用其 API，未分发修改后的核心二进制。

@@ -16,10 +16,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "wordwise.koplugin"
 BOOKNAME = "ReadAssist ECDICT Short"
-VERSION = "0.4.2-preview"
+VERSION = "0.4.3-preview"
 COMMON_COUNT = 30_000
 WORD = re.compile(r"^[a-z][a-z'-]{1,29}$")
-EXAM_FILES = ("primary", "junior", "senior", "cet4", "cet6", "tem8")
+EXAM_FILES = ("primary", "junior", "senior", "cet4", "cet6")
 
 
 def read_exam(directory: Path) -> dict[str, int]:
@@ -182,7 +182,7 @@ def build_assets(model: Path, ecdict_csv: Path, frequency: Path, exam_dir: Path)
     dictionary_dir = data / "dict" / "readassist-short"
     dictionary_dir.mkdir(parents=True, exist_ok=True)
     with (data / "levels.tsv").open("w", encoding="utf-8", newline="\n") as stream:
-        stream.write("# common word\t0=primary 1=junior 2=senior 3=CET4 4=CET6 5=TEM8/extension\tfrequency rank\n")
+        stream.write("# common word\t0=primary 1=junior 2=senior 3=CET4 4=CET6 5=unclassified\tfrequency rank\n")
         for word, level, rank in sorted(levels):
             stream.write(f"{word}\t{level}\t{rank}\n")
     index, definitions = bytearray(), bytearray()
@@ -231,7 +231,7 @@ def build_assets(model: Path, ecdict_csv: Path, frequency: Path, exam_dir: Path)
         "extension_common_words": extension_count,
         "group_counts":counts,
         "grammar_contractions": contractions,
-        "extension_policy": "No source match or outside 30k index: TEM8 group by user policy; not official exam membership",
+        "extension_policy": "No primary-through-CET6 match or outside 30k index: unclassified; not an exam level",
     }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     target = PLUGIN / "models/eng.traineddata"
     target.parent.mkdir(exist_ok=True)
@@ -256,6 +256,7 @@ def build_assets(model: Path, ecdict_csv: Path, frequency: Path, exam_dir: Path)
         "source_exam_records": source_count,
         "grammar_derived_records": grammar_count,
         "extension_records": extension_count,
+        "unclassified_records": extension_count,
         "group_counts":counts,
         "invalid_source_records": len(rejected),
         "source_sha256": hashlib.sha256(ecdict_csv.read_bytes()).hexdigest(),
@@ -264,7 +265,7 @@ def build_assets(model: Path, ecdict_csv: Path, frequency: Path, exam_dir: Path)
         "curriculum_sources": {name: hashlib.sha256((exam_dir/name).read_bytes()).hexdigest() for name in ('primary-curriculum-2022.tsv','primary-curriculum-aliases.tsv')},
         "pos_model_sha256":pos_hashes,
         "grammar_contractions_sha256": hashlib.sha256(contractions_path.read_bytes()).hexdigest(),
-        "classification": "2022 primary curriculum, 2020 official senior curriculum, 2016 official CET, textbook lists and ECDICT tags compared; earliest attested spelling or explicit inflection stage; other words TEM8 display policy",
+        "classification": "Primary through CET6 only; earliest attested spelling or explicit inflection stage; all other words unclassified. Legacy TEM8 list is not used for classification.",
         "additional_evidence_sha256":hashlib.sha256((exam_dir/'additional-evidence.json').read_bytes()).hexdigest(),
         "proper_noun_backend":"MIT averaged perceptron POS model; NNP/NNPS protection before case folding and deduplication; not a PERSON-only NER model",
         "model_sha256": hashlib.sha256(model.read_bytes()).hexdigest(),

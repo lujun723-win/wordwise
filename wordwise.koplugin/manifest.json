@@ -1,12 +1,12 @@
 {
-  "version": "0.4.2-preview",
+  "version": "0.4.3-preview",
   "target": "Kindle Scribe / KOReader 2026.07.1",
   "records": 30000,
   "dictionary_records": 365619,
-  "graded_records": 19906,
-  "source_exam_records": 19861,
+  "graded_records": 16241,
+  "source_exam_records": 16196,
   "grammar_derived_records": 45,
-  "extension_records": 10094,
+  "extension_records": 13759,
   "group_counts": {
     "0": 1842,
     "1": 2328,
@@ -23,8 +23,7 @@
     "junior": "f0e0ede7df764ad20d0067111a83501a9ac3ab321de57b7d950a0fc8f794b514",
     "senior": "ceb5e6a0be383184d52d6430240bc69b0a486790461623805ff5ab8f2c562e7c",
     "cet4": "3f40e3c0407c6bd083ff41a71059e82a40cba9d7e97c088762f332e91887a76a",
-    "cet6": "1b6848940d6f40a048c60e972216d7f5deaab991d9ad455093dc0002aae08e1b",
-    "tem8": "0d4ca7ba2fb165af4c94eb0b970965b68e065e764eca280ee1167af585246d94"
+    "cet6": "1b6848940d6f40a048c60e972216d7f5deaab991d9ad455093dc0002aae08e1b"
   },
   "curriculum_sources": {
     "primary-curriculum-2022.tsv": "2624cf87df08d4475f697db0f0678607c125557ebb5c89a31309f74b1b1f1c0a",
@@ -36,11 +35,12 @@
     "averaged_perceptron_tagger_eng.tagdict.json": "4c713731cb06727736962bc8cd94ad919217a040e76691059af99bc0c2c9c246"
   },
   "grammar_contractions_sha256": "46091d48005cdac272e64832a3436d63dbd171f902977414ea4d0bc0a3cd72d8",
-  "classification": "2022 primary curriculum, 2020 official senior curriculum, 2016 official CET, textbook lists and ECDICT tags compared; earliest attested spelling or explicit inflection stage; other words TEM8 display policy",
+  "classification": "Primary through CET6 only; earliest attested spelling or explicit inflection stage; all other words unclassified. Legacy TEM8 list is not used for classification.",
   "additional_evidence_sha256": "93bfd57f97b27ed45990d32ef70825fb5354b4791443a344c47aca09806ddd3f",
   "proper_noun_backend": "MIT averaged perceptron POS model; NNP/NNPS protection before case folding and deduplication; not a PERSON-only NER model",
   "model_sha256": "daa0c97d651c19fba3b25e81317cd697e9908c8208090c94c3905381c23fc047",
   "model_source": "https://github.com/tesseract-ocr/tessdata/blob/4.1.0/eng.traineddata",
   "ocr_backend": "KOReader KOPTContext: native word boxes + PSM_SINGLE_WORD",
-  "text_backend": "CREngine original XPointers; PDF original MuPDF text boxes; OCR only when visible pages have no source text"
+  "text_backend": "CREngine original XPointers; PDF original MuPDF text boxes; OCR only when visible pages have no source text",
+  "unclassified_records": 13759
 }

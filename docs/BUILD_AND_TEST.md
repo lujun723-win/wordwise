@@ -13,6 +13,7 @@ ReaderView提示层按实际字形裁空白，字号不变；中文与横括号�
 0.4.1的wordwise_prefetch.lua在KOReader已有fork子进程中取相邻页原文、查词并返回提示坐标，不触发主ReaderUI翻页事件。主进程通过管道取结果，读取前确认有输出；关闭、休眠、布局变化取消并回收子进程。只缓存当前／前／后三页的文字结果；绘图前检查原生布局hash、尺寸、偏移、难度、字号、上限和按钮配置。命中缓存时在ReaderView同帧绘制，不再setDirty另刷一次。native_reader.lua覆盖真实相邻页首帧与主进程阅读位置，native_prefetch.lua覆盖大管道传输、错误上报、取消及进程组创建竞争；不新增平台运行时。
 
 - sources/exam保留国内六阶段词表与固定来源。课标转录经过逐页目视核对，不猜修正PDF的OCR文本。
+- 0.4.3仅使用小学至六级五阶段；level=5为未划分等级，tem8.txt只作历史文件，不在EXAM_FILES中。兼容旧档位索引，不改三万词筛选结果。不要把未划分解释为高于六级。
 - 每词和明确屈折关系取最早来源阶段，不再让独立词条较高等级覆盖基础原型；读取ECDICT的0原型与p/d/i/3/r/t/s正向关系，不猜词尾。无来源及范围外进入专八显示档，与实际收录分开。
 - tools/compare_official_levels.py使用pypdf读取官方高中课标、CET大纲的指定词表页，结合ECDICT标签，生成additional-evidence.json。原始PDF文件名、来源和范围见脚本；摘要与页码随生成数据保留。只支持明确电子文本行，排除并记录缩略或不支持的行，不运行OCR或拼写修补。
 - MIT averaged perceptron模型的NNP/NNPS过滤先于小写和去重。Lua推理复用KOReader JSON，无新平台二进制。tests/test_names.py与保存的上游方法对照，不安装NLTK。
