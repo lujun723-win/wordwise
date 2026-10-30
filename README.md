@@ -1,10 +1,12 @@
-# WordWise 0.4.3 生词提示 · Kindle Scribe 预览版
+# WordWise 0.4.4 生词提示 · Kindle Scribe 预览版
 
 为 KOReader 2026.07.1 提供当前页英文生词的中文短释义。文字版优先读取原文；没有文字层的扫描页用离线 OCR。全部离线查 StarDict，不联网、不调用 AI。
 
 ## 安装
 
-到 [Releases](https://github.com/lujun723-win/wordwise/releases) 下载 `WordWise-Kindle-Scribe-v0.4.3-preview.zip` 完整安装包。当前为预览版，Kindle Scribe 仍待实机验收。
+完整安装包名为 `WordWise-Kindle-Scribe-v0.4.4-preview.zip`。已发布的版本在 [Releases](https://github.com/lujun723-win/wordwise/releases) 下载。当前为预览版，Kindle Scribe 仍待实机验收。
+
+0.4.4修复空白页或稀疏页面未分割出词框时误报“生词提示预处理失败”的问题；无词可识别时正常跳过，后续页面继续处理。目录页有原文时仍直接读取原文。升级请完整替换插件文件夹后重启 KOReader。
 
 1. Kindle Scribe 已能正常运行 KOReader 2026.07.1。
 2. 将安装包内 `koreader/plugins/wordwise.koplugin` 整个目录复制到 Kindle **现有的** `koreader/plugins/` 下，不要多套一层同名目录。

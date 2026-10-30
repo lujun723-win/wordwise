@@ -29,7 +29,9 @@ function OCR.recognize(gray, model_dir, dpi)
             ffi.copy(kc.src.data + y * width, gray.data + y * gray.stride, width)
         end
         local rows = kc:getNativeWordBoxes("src", 0, 0, width, height)
-        assert(rows, "OCR 无法分割当前页文本。")
+        -- KOReader returns nil when native segmentation finds no word boxes
+        -- (including blank pages). This is a valid empty page, not an error.
+        if not rows then return { words = {}, lines = {} } end
         local words, lines = {}, {}
         for line_id, row in ipairs(rows) do
             lines[#lines + 1] = { x0 = row.x0, y0 = row.y0, x1 = row.x1, y1 = row.y1 }

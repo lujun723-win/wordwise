@@ -68,4 +68,6 @@ python3 tests/test_model_ocr.py
 
 native_reader.lua验证完整ReaderUI、按钮触摸、实际翻页和关闭停止。运行前在独立KO_HOME/plugins下链接项目插件，设置WORDWISE_PROJECT为项目绝对路径，并创建输出目录。夹具为tests/fixtures内的测试文本。须恢复起始页与按钮状态，不能依赖上次设置；不使用用户真实KO_HOME。
 
+native_empty.lua参数为项目绝对目录，使用相同的原生测试环境；验证真实空白截图的OCR空结果、空白后正常正文OCR，以及实际fork中的正文／空白／目录／献词／后续正文批次。夹具关闭CRe页眉以确认真正的空白页。getNativeWordBoxes返回nil表示无词框，不当作异常；不捕获并忽略模型、引擎或坐标错误。
+
 先结束读取词典的测试，再重建数据，最后检查最终ZIP，不并行读写词典。部署前正常退出并备份旧插件，完整替换后重启检查。Kindle结果单独记录，不能用Mac测试代替。

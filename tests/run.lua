@@ -124,7 +124,7 @@ test("thirty labels fit and the thirty-first is limited",function()
 end)
 
 -- Exercise the native bridge with actual FFI memory and deliberately padded rows.
-local bridge_fail, bridge_box, context
+local bridge_fail, bridge_box, context, bridge_empty, bridge_error
 package.loaded["ffi/koptcontext"] = {
     k2pdfopt = { bmp_alloc = function() return 1 end },
     new = function()
@@ -135,6 +135,9 @@ package.loaded["ffi/koptcontext"] = {
             freeOCR=function(self) self.cleaned=self.cleaned+1 end,
             free=function(self) self.freed=true end,
             getNativeWordBoxes=function()
+                if bridge_error then error("native segmentation error") end
+                if bridge_empty=="nil" then return nil end
+                if bridge_empty=="table" then return {} end
                 local box = bridge_box or {x0=0,y0=0,x1=3,y1=2}
                 local row = {box}; row.x0,row.y0,row.x1,row.y1=0,0,3,2
                 return {row}
@@ -235,6 +238,27 @@ test("invalid OCR coordinates are rejected before native recognition", function(
     bridge_box={x0=0,y0=0,x1=40,y1=2}
     rejects(function() OCR.recognize(gray,"tests/fixtures/model",300) end)
     equal(context.freed,true); bridge_box=nil
+end)
+test("no native word boxes is a valid empty OCR result and frees resources", function()
+    bridge_empty="nil"
+    local out=OCR.recognize(gray,"tests/fixtures/model",300)
+    equal(#out.words,0);equal(#out.lines,0)
+    equal(context.cleaned,2);equal(context.freed,true);bridge_empty=nil
+end)
+test("zero native rows is a valid empty OCR result", function()
+    bridge_empty="table"
+    local out=OCR.recognize(gray,"tests/fixtures/model",300)
+    equal(#out.words,0);equal(#out.lines,0);equal(context.freed,true);bridge_empty=nil
+end)
+test("native segmentation exceptions still propagate and free resources", function()
+    bridge_error=true
+    rejects(function() OCR.recognize(gray,"tests/fixtures/model",300) end)
+    equal(context.cleaned,2);equal(context.freed,true);bridge_error=nil
+end)
+test("missing OCR model remains an explicit error on an empty page", function()
+    bridge_empty="nil"
+    rejects(function() OCR.recognize(gray,"tests/fixtures/model/missing",300) end)
+    bridge_empty=nil
 end)
 
 local dirty, snapshots, notices, scan_result, cancel_scan, invalidate_in_scan, scheduled
@@ -583,6 +607,14 @@ end)
 test("rendering error releases snapshot and clears busy flag",function()
     local o=instance();o.view.paintTo=function() error("render error") end
     o:onWordWiseScan();equal(o.busy,false);equal(snapshots[1].freed,true);equal(#notices,1)
+end)
+test("automatic empty OCR page clears old hints without an error popup",function()
+    local o=instance();o:runScan();equal(#o.labels,1)
+    notices={};scan_result={words={},lines={}}
+    o:onWordWiseScan(true)
+    equal(#o.labels,0);equal(#notices,0);equal(o.busy,false)
+    scan_result={words={occurrence("someone")},lines={{x0=0,y0=100,x1=300,y1=120}}}
+    o:onWordWiseScan(true);equal(#o.labels,1);equal(#notices,0)
 end)
 test("busy scan ignores another scan request",function()
     local o=instance();o.busy=true;o:onWordWiseScan();equal(#snapshots,0)
